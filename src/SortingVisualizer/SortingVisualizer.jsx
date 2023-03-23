@@ -1,6 +1,7 @@
-import React from 'react';
-import { getMergeSortAnimations } from '../SortingAlgorithms/mergeSort';
-import './SortingVisualizer.css';
+import React, { useState } from "react";
+import { getMergeSortAnimations } from "../SortingAlgorithms/mergeSort";
+import "./SortingVisualizer.css";
+import "../style.scss";
 
 // Change this value for the speed of the animations.
 const ANIMATION_SPEED_MS = 1;
@@ -9,10 +10,15 @@ const ANIMATION_SPEED_MS = 1;
 const NUMBER_OF_ARRAY_BARS = 310;
 
 // This is the main color of the array bars.
-const PRIMARY_COLOR = 'turquoise';
+const PRIMARY_COLOR = "turquoise";
 
 // This is the color of array bars that are being compared throughout the animations.
-const SECONDARY_COLOR = 'red';
+const SECONDARY_COLOR = "red";
+
+var input_size = document.getElementById("a_size");
+var margin_size = 0.1;
+const input_generate = document.getElementById("a_generate");
+const input_speed = document.getElementById("a_speed");
 
 export default class SortingVisualizer extends React.Component {
   constructor(props) {
@@ -20,25 +26,33 @@ export default class SortingVisualizer extends React.Component {
 
     this.state = {
       array: [],
+      array_size: 80,
     };
   }
 
   componentDidMount() {
-    this.resetArray();
+    this.updateSize();
   }
 
   resetArray() {
     const array = [];
-    for (let i = 0; i < NUMBER_OF_ARRAY_BARS; i++) {
+    var finalArray = [];
+    for (let i = 0; i < input_size.value; i++) {
       array.push(randomIntFromInterval(5, 730));
     }
-    this.setState({array});
+    this.setState({ array: array });
   }
+
+  updateSize = () => {
+    input_size = document.getElementById("a_size");
+    this.setState({ array_size: input_size.value });
+    this.resetArray();
+  };
 
   mergeSort() {
     const animations = getMergeSortAnimations(this.state.array);
     for (let i = 0; i < animations.length; i++) {
-      const arrayBars = document.getElementsByClassName('array-bar');
+      const arrayBars = document.getElementsByClassName("array-bar");
       const isColorChange = i % 3 !== 2;
       if (isColorChange) {
         const [barOneIdx, barTwoIdx] = animations[i];
@@ -72,29 +86,72 @@ export default class SortingVisualizer extends React.Component {
   }
 
   render() {
-    const {array} = this.state;
+    const { array } = this.state;
 
     return (
       <div className="array-container">
         <nav>
-            <ul>
-                <li><a onClick={() => this.resetArray()}>Generate New Array</a></li>
-                <li><a href="#">Merge Sort</a></li>
-                <li><a href="#">Quick Sort</a></li>
-                <li><a href="#">Heap Sort</a></li>
-                <li><a href="#">Bubble Sort</a></li>
-                <li><a href="#">Insertion Sort</a></li>
-            </ul>
+          <div id="array-inputs">
+            <p>Array Size:</p>
+            <input
+              id="a_size"
+              type="range"
+              min={20}
+              max={150}
+              step={1}
+              defaultValue={80}
+              onInput={this.updateSize}
+            ></input>
+            <p>Sort Speed:</p>
+            <input
+              id="a_speed"
+              type="range"
+              min={1}
+              max={5}
+              step={1}
+              defaultValue={4}
+            ></input>
+          </div>
+          <ul>
+            <li>
+              <a href="#">Bubble Sort</a>
+            </li>
+            <li>
+              <a href="#">Insertion Sort</a>
+            </li>
+            <li>
+              <a href="#">Selection Sort</a>
+            </li>
+            <li>
+              <a href="#">Merge Sort</a>
+            </li>
+            <li>
+              <a href="#">Quick Sort</a>
+            </li>
+            <li>
+              <a href="#">Heap Sort</a>
+            </li>
+            <li>
+              <a onClick={() => this.resetArray()}>Generate New Array</a>
+            </li>
+          </ul>
         </nav>
-        {array.map((value, idx) => (
-          <div
-            className="array-bar"
-            key={idx}
-            style={{
-              backgroundColor: PRIMARY_COLOR,
-              height: `${value}px`,
-            }}></div>
-        ))}
+        <div id="Info_Cont1">
+          <h3>Time Complexity</h3>
+        </div>
+        <div id="array_container">
+          {array.map((value, idx) => (
+            <div
+              className="array-bar"
+              key={idx}
+              style={{
+                backgroundColor: PRIMARY_COLOR,
+                height: `${value}px`,
+                width: `${100 / input_size.value - 2 * margin_size}%`,
+              }}
+            ></div>
+          ))}
+        </div>
       </div>
     );
   }
