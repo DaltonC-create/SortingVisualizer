@@ -15,12 +15,12 @@ export default function bubbleSort(array) {
         animations.push([j, array[j], "red"]);
         animations.push([j + 1, array[j + 1], "red"]);
 
-        var temp = array[j];
-        array[j] = array[j + 1];
-        array[j + 1] = temp;
+        var temp = array[j + 1];
+        array[j + 1] = array[j];
+        array[j] = temp;
 
-        animations.push([j, array[j], "red"]);
         animations.push([j + 1, array[j + 1], "red"]);
+        animations.push([j, array[j], "red"]);
       }
       animations.push([j, array[j], "blue"]);
     }
