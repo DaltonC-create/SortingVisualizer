@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { getMergeSortAnimations } from "../SortingAlgorithms/mergeSort";
 import "./SortingVisualizer.css";
-import "../style.scss";
+import bubbleSort from "../SortingAlgorithms/bubbleSort";
 
 // Change this value for the speed of the animations.
-const ANIMATION_SPEED_MS = 1;
+const ANIMATION_SPEED_MS = 10;
 
 // Change this value for the number of bars (value) in the array.
 const NUMBER_OF_ARRAY_BARS = 310;
@@ -15,10 +15,12 @@ const PRIMARY_COLOR = "turquoise";
 // This is the color of array bars that are being compared throughout the animations.
 const SECONDARY_COLOR = "red";
 
-var input_size = document.getElementById("a_size");
+var input_size = document.getElementById("array-size");
+var input_speed = document.getElementById("array-speed");
+// Default Speed.
+var sortSpeed = 10000 / (Math.floor(80 / 10) * 1000);
+var c_delay = 0;
 var margin_size = 0.1;
-const input_generate = document.getElementById("a_generate");
-const input_speed = document.getElementById("a_speed");
 
 export default class SortingVisualizer extends React.Component {
   constructor(props) {
@@ -34,9 +36,8 @@ export default class SortingVisualizer extends React.Component {
     this.updateSize();
   }
 
-  resetArray() {
+  initializeArray() {
     const array = [];
-    var finalArray = [];
     for (let i = 0; i < input_size.value; i++) {
       array.push(randomIntFromInterval(5, 730));
     }
@@ -44,9 +45,44 @@ export default class SortingVisualizer extends React.Component {
   }
 
   updateSize = () => {
-    input_size = document.getElementById("a_size");
+    input_size = document.getElementById("array-size");
     this.setState({ array_size: input_size.value });
-    this.resetArray();
+    this.initializeArray();
+  };
+
+  resetArray() {
+    const array = [];
+    for (let i = 0; i < input_size.value; i++) {
+      array.push(randomIntFromInterval(5, 730));
+      const arrayBars = document.getElementsByClassName("array-bar");
+      const barStyle = arrayBars[i].style;
+      barStyle.backgroundColor = PRIMARY_COLOR;
+    }
+    this.setState({ array });
+  }
+
+  updateSpeed = () => {
+    input_speed = document.getElementById("array-speed");
+    var sliderSpeed = 1000;
+    switch (parseInt(input_speed.value)) {
+      case 1:
+        sliderSpeed = 1;
+        break;
+      case 2:
+        sliderSpeed = 10;
+        break;
+      case 3:
+        sliderSpeed = 100;
+        break;
+      case 4:
+        sliderSpeed = 1000;
+        break;
+      case 5:
+        sliderSpeed = 10000;
+        break;
+    }
+
+    sortSpeed = 10000 / (Math.floor(input_size.value / 10) * sliderSpeed);
   };
 
   mergeSort() {
@@ -68,33 +104,39 @@ export default class SortingVisualizer extends React.Component {
           const [barOneIdx, newHeight] = animations[i];
           const barOneStyle = arrayBars[barOneIdx].style;
           barOneStyle.height = `${newHeight}px`;
-        }, i * ANIMATION_SPEED_MS);
+        }, sortSpeed);
       }
     }
   }
 
-  quickSort() {
-    // We leave it as an exercise to the viewer of this code to implement this method.
-  }
+  quickSort() {}
 
-  heapSort() {
-    // We leave it as an exercise to the viewer of this code to implement this method.
-  }
+  heapSort() {}
 
   bubbleSort() {
-    // We leave it as an exercise to the viewer of this code to implement this method.
+    const animationArray = bubbleSort(this.state.array);
+    // First index is the element, second index is height, third index is color.
+    for (let i = 0; i < animationArray.length; i++) {
+      setTimeout(() => {
+        const arrayBars = document.getElementsByClassName("array-bar");
+        const [barOneIdx, height, color] = animationArray[i];
+        const barOneStyle = arrayBars[barOneIdx].style;
+        barOneStyle.backgroundColor = color;
+        barOneStyle.height = `${height}px`;
+      }, (c_delay += sortSpeed));
+    }
   }
 
   render() {
     const { array } = this.state;
 
     return (
-      <div className="array-container">
+      <div>
         <nav>
           <div id="array-inputs">
             <p>Array Size:</p>
             <input
-              id="a_size"
+              id="array-size"
               type="range"
               min={20}
               max={150}
@@ -104,17 +146,18 @@ export default class SortingVisualizer extends React.Component {
             ></input>
             <p>Sort Speed:</p>
             <input
-              id="a_speed"
+              id="array-speed"
               type="range"
               min={1}
               max={5}
               step={1}
               defaultValue={4}
+              onInput={this.updateSpeed}
             ></input>
           </div>
           <ul>
             <li>
-              <a href="#">Bubble Sort</a>
+              <a onClick={() => this.bubbleSort()}>Bubble Sort</a>
             </li>
             <li>
               <a href="#">Insertion Sort</a>
@@ -123,7 +166,7 @@ export default class SortingVisualizer extends React.Component {
               <a href="#">Selection Sort</a>
             </li>
             <li>
-              <a href="#">Merge Sort</a>
+              <a onClick={() => this.mergeSort()}>Merge Sort</a>
             </li>
             <li>
               <a href="#">Quick Sort</a>
@@ -136,22 +179,24 @@ export default class SortingVisualizer extends React.Component {
             </li>
           </ul>
         </nav>
-        <div id="Info_Cont1">
-          <h3>Time Complexity</h3>
-        </div>
-        <div id="array_container">
-          {array.map((value, idx) => (
-            <div
-              className="array-bar"
-              key={idx}
-              style={{
-                backgroundColor: PRIMARY_COLOR,
-                height: `${value}px`,
-                width: `${100 / input_size.value - 2 * margin_size}%`,
-              }}
-            ></div>
-          ))}
-        </div>
+        <section>
+          <div id="time-container">
+            <h3>Time Complexity</h3>
+          </div>
+          <div className="array-container">
+            {array.map((value, idx) => (
+              <div
+                className="array-bar"
+                key={idx}
+                style={{
+                  backgroundColor: PRIMARY_COLOR,
+                  height: `${value}px`,
+                  width: `${100 / input_size.value - 2 * margin_size}%`,
+                }}
+              ></div>
+            ))}
+          </div>
+        </section>
       </div>
     );
   }
