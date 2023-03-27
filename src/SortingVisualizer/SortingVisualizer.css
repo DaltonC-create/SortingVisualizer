@@ -113,3 +113,36 @@ section #array-container {
   height: 100%;
   width: 10%;
 }
+
+section #time-container {
+  padding: 20% 10%;
+}
+
+section #time-container h3 {
+  text-decoration: underline;
+}
+
+section #space-container {
+  padding: 20% 10%;
+}
+
+section #space-container h3 {
+  text-decoration: underline;
+}
+
+section #complexity-container {
+  margin-top: 20%;
+}
+
+section .complexity-container .complexity-cases {
+  margin-top: 20%;
+}
+
+section .complexity-container .complexity-cases p {
+  display: inline;
+}
+
+section .complexity-container .complexity-cases p.sub-heading {
+  font-size: medium;
+  text-transform: none;
+}

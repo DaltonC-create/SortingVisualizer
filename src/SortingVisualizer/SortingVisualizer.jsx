@@ -6,20 +6,20 @@ import bubbleSort from "../SortingAlgorithms/bubbleSort";
 // Change this value for the speed of the animations.
 const ANIMATION_SPEED_MS = 10;
 
-// Change this value for the number of bars (value) in the array.
-const NUMBER_OF_ARRAY_BARS = 310;
-
 // This is the main color of the array bars.
 const PRIMARY_COLOR = "turquoise";
 
 // This is the color of array bars that are being compared throughout the animations.
 const SECONDARY_COLOR = "red";
 
+// Initialize variables to track input sliders.
 var input_size = document.getElementById("array-size");
 var input_speed = document.getElementById("array-speed");
 // Default Speed.
 var sortSpeed = 10000 / (Math.floor(80 / 10) * 1000);
+// Incremental speed that increases as the unsorted size decreases.
 var c_delay = 0;
+// Help with the width of the bars.
 var margin_size = 0.1;
 
 export default class SortingVisualizer extends React.Component {
@@ -28,7 +28,6 @@ export default class SortingVisualizer extends React.Component {
 
     this.state = {
       array: [],
-      array_size: 80,
     };
   }
 
@@ -58,7 +57,11 @@ export default class SortingVisualizer extends React.Component {
       const barStyle = arrayBars[i].style;
       barStyle.backgroundColor = PRIMARY_COLOR;
     }
-    this.setState({ array });
+    document.getElementById("time-best").innerHTML = "";
+    document.getElementById("time-average").innerHTML = "";
+    document.getElementById("time-worst").innerHTML = "";
+    document.getElementById("space-worst").innerHTML = "";
+    this.setState({ array: array });
   }
 
   updateSpeed = () => {
@@ -114,6 +117,7 @@ export default class SortingVisualizer extends React.Component {
   heapSort() {}
 
   bubbleSort() {
+    c_delay = 0;
     const animationArray = bubbleSort(this.state.array);
     // First index is the element, second index is height, third index is color.
     for (let i = 0; i < animationArray.length; i++) {
@@ -182,6 +186,22 @@ export default class SortingVisualizer extends React.Component {
         <section>
           <div id="time-container">
             <h3>Time Complexity</h3>
+            <div class="complexity-container">
+              <div class="complexity-cases">
+                <p class="sub-heading">Best Case:</p>
+                <p id="time-best"></p>
+              </div>
+
+              <div class="complexity-cases">
+                <p class="sub-heading">Average Case:</p>
+                <p id="time-average"></p>
+              </div>
+
+              <div class="complexity-cases">
+                <p class="sub-heading">Worst Case:</p>
+                <p id="time-worst"></p>
+              </div>
+            </div>
           </div>
           <div className="array-container">
             {array.map((value, idx) => (
@@ -195,6 +215,15 @@ export default class SortingVisualizer extends React.Component {
                 }}
               ></div>
             ))}
+          </div>
+          <div id="space-container">
+            <h3>Space Complexity</h3>
+            <div class="complexity-container">
+              <div class="complexity-cases">
+                <p class="sub=heading">Worst Case:</p>
+                <p id="space-worst"></p>
+              </div>
+            </div>
           </div>
         </section>
       </div>
