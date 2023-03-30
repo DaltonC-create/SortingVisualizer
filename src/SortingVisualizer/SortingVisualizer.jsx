@@ -144,23 +144,6 @@ export default class SortingVisualizer extends React.Component {
 
   heapSort() {}
 
-  // Handle hovering over array bars.
-  toggleHoverOver = (e) => {
-    var hoverStyle = e.target.style;
-    // Remove px when displaying.
-    var height = e.target.style.height.slice(0, -2);
-    var bar = document.getElementById("bar-value");
-    bar.innerHTML = height;
-  };
-
-  toggleHoverOut = (e) => {
-    var hoverStyle = e.target.style;
-    var bar = document.getElementById("bar-value");
-    bar.innerHTML = "";
-  };
-
-  TriggerExample() {}
-
   render() {
     const { array } = this.state;
 
@@ -244,8 +227,6 @@ export default class SortingVisualizer extends React.Component {
                   width: `${100 / input_size.value - 2 * margin_size}%`,
                 }}
                 data-hover={value}
-                onMouseOverCapture={this.toggleHoverOver}
-                onMouseOutCapture={this.toggleHoverOut}
               ></div>
             ))}
           </div>
@@ -255,13 +236,6 @@ export default class SortingVisualizer extends React.Component {
               <div className="complexity-cases">
                 <p className="sub-heading">Worst Case:</p>
                 <p id="space-worst"></p>
-              </div>
-            </div>
-            <div id="height-container">
-              <h3>Bar Height</h3>
-              <div className="bar-height">
-                <p className="sub-heading"></p>
-                <p id="bar-value"></p>
               </div>
             </div>
           </div>

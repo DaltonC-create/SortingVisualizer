@@ -171,12 +171,3 @@ section .complexity-container .complexity-cases p.sub-heading {
   font-size: medium;
   text-transform: none;
 }
-
-section #height-container {
-  margin-top: 50%;
-}
-
-section .height-container .bar-height {
-  display: inline-block;
-  width: 100%;
-}
