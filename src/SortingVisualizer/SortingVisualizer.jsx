@@ -1,7 +1,11 @@
 import React, { useState } from "react";
-import { getMergeSortAnimations } from "../SortingAlgorithms/mergeSort";
+import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+import ReactTooltip from "react-tooltip";
+import "react-tooltip/dist/react-tooltip.css";
 import "./SortingVisualizer.css";
 import bubbleSort from "../SortingAlgorithms/bubbleSort";
+import mergeSort from "../SortingAlgorithms/mergeSort";
+import insertionSort from "../SortingAlgorithms/insertionSort";
 
 // Change this value for the speed of the animations.
 const ANIMATION_SPEED_MS = 10;
@@ -11,6 +15,9 @@ const PRIMARY_COLOR = "turquoise";
 
 // This is the color of array bars that are being compared throughout the animations.
 const SECONDARY_COLOR = "red";
+
+// If Hovering occurs on a bar.
+var isHover = false;
 
 // Initialize variables to track input sliders.
 var input_size = document.getElementById("array-size");
@@ -28,6 +35,7 @@ export default class SortingVisualizer extends React.Component {
 
     this.state = {
       array: [],
+      isHover: false,
     };
   }
 
@@ -45,7 +53,6 @@ export default class SortingVisualizer extends React.Component {
 
   updateSize = () => {
     input_size = document.getElementById("array-size");
-    this.setState({ array_size: input_size.value });
     this.initializeArray();
   };
 
@@ -88,34 +95,6 @@ export default class SortingVisualizer extends React.Component {
     sortSpeed = 10000 / (Math.floor(input_size.value / 10) * sliderSpeed);
   };
 
-  mergeSort() {
-    const animations = getMergeSortAnimations(this.state.array);
-    for (let i = 0; i < animations.length; i++) {
-      const arrayBars = document.getElementsByClassName("array-bar");
-      const isColorChange = i % 3 !== 2;
-      if (isColorChange) {
-        const [barOneIdx, barTwoIdx] = animations[i];
-        const barOneStyle = arrayBars[barOneIdx].style;
-        const barTwoStyle = arrayBars[barTwoIdx].style;
-        const color = i % 3 === 0 ? SECONDARY_COLOR : PRIMARY_COLOR;
-        setTimeout(() => {
-          barOneStyle.backgroundColor = color;
-          barTwoStyle.backgroundColor = color;
-        }, i * ANIMATION_SPEED_MS);
-      } else {
-        setTimeout(() => {
-          const [barOneIdx, newHeight] = animations[i];
-          const barOneStyle = arrayBars[barOneIdx].style;
-          barOneStyle.height = `${newHeight}px`;
-        }, sortSpeed);
-      }
-    }
-  }
-
-  quickSort() {}
-
-  heapSort() {}
-
   bubbleSort() {
     c_delay = 0;
     const animationArray = bubbleSort(this.state.array);
@@ -123,13 +102,64 @@ export default class SortingVisualizer extends React.Component {
     for (let i = 0; i < animationArray.length; i++) {
       setTimeout(() => {
         const arrayBars = document.getElementsByClassName("array-bar");
-        const [barOneIdx, height, color] = animationArray[i];
-        const barOneStyle = arrayBars[barOneIdx].style;
-        barOneStyle.backgroundColor = color;
-        barOneStyle.height = `${height}px`;
+        const [barIdx, height, color] = animationArray[i];
+        const barStyle = arrayBars[barIdx].style;
+        barStyle.backgroundColor = color;
+        barStyle.height = `${height}px`;
       }, (c_delay += sortSpeed));
     }
   }
+
+  insertionSort() {
+    c_delay = 0;
+    const animationArray = insertionSort(this.state.array);
+    for (let i = 0; i < animationArray.length; i++) {
+      setTimeout(() => {
+        const arrayBars = document.getElementsByClassName("array-bar");
+        const [barIdx, height, color] = animationArray[i];
+        const barStyle = arrayBars[barIdx].style;
+        barStyle.backgroundColor = color;
+        barStyle.height = `${height}px`;
+      }, (c_delay += sortSpeed));
+    }
+  }
+
+  selectionSort() {}
+
+  mergeSort() {
+    c_delay = 0;
+    const animationArray = mergeSort(this.state.array);
+    for (let i = 0; i < animationArray.length; i++) {
+      setTimeout(() => {
+        const arrayBars = document.getElementsByClassName("array-bar");
+        const [barIdx, height, color] = animationArray[i];
+        const barStyle = arrayBars[barIdx].style;
+        barStyle.backgroundColor = color;
+        barStyle.height = `${height}px`;
+      }, (c_delay += sortSpeed));
+    }
+  }
+
+  quickSort() {}
+
+  heapSort() {}
+
+  // Handle hovering over array bars.
+  toggleHoverOver = (e) => {
+    var hoverStyle = e.target.style;
+    // Remove px when displaying.
+    var height = e.target.style.height.slice(0, -2);
+    var bar = document.getElementById("bar-value");
+    bar.innerHTML = height;
+  };
+
+  toggleHoverOut = (e) => {
+    var hoverStyle = e.target.style;
+    var bar = document.getElementById("bar-value");
+    bar.innerHTML = "";
+  };
+
+  TriggerExample() {}
 
   render() {
     const { array } = this.state;
@@ -164,7 +194,7 @@ export default class SortingVisualizer extends React.Component {
               <a onClick={() => this.bubbleSort()}>Bubble Sort</a>
             </li>
             <li>
-              <a href="#">Insertion Sort</a>
+              <a onClick={() => this.insertionSort()}>Insertion Sort</a>
             </li>
             <li>
               <a href="#">Selection Sort</a>
@@ -186,19 +216,19 @@ export default class SortingVisualizer extends React.Component {
         <section>
           <div id="time-container">
             <h3>Time Complexity</h3>
-            <div class="complexity-container">
-              <div class="complexity-cases">
-                <p class="sub-heading">Best Case:</p>
+            <div className="complexity-container">
+              <div className="complexity-cases">
+                <p className="sub-heading">Best Case:</p>
                 <p id="time-best"></p>
               </div>
 
-              <div class="complexity-cases">
-                <p class="sub-heading">Average Case:</p>
+              <div className="complexity-cases">
+                <p className="sub-heading">Average Case:</p>
                 <p id="time-average"></p>
               </div>
 
-              <div class="complexity-cases">
-                <p class="sub-heading">Worst Case:</p>
+              <div className="complexity-cases">
+                <p className="sub-heading">Worst Case:</p>
                 <p id="time-worst"></p>
               </div>
             </div>
@@ -213,15 +243,25 @@ export default class SortingVisualizer extends React.Component {
                   height: `${value}px`,
                   width: `${100 / input_size.value - 2 * margin_size}%`,
                 }}
+                data-hover={value}
+                onMouseOverCapture={this.toggleHoverOver}
+                onMouseOutCapture={this.toggleHoverOut}
               ></div>
             ))}
           </div>
           <div id="space-container">
             <h3>Space Complexity</h3>
-            <div class="complexity-container">
-              <div class="complexity-cases">
-                <p class="sub=heading">Worst Case:</p>
+            <div className="complexity-container">
+              <div className="complexity-cases">
+                <p className="sub-heading">Worst Case:</p>
                 <p id="space-worst"></p>
+              </div>
+            </div>
+            <div id="height-container">
+              <h3>Bar Height</h3>
+              <div className="bar-height">
+                <p className="sub-heading"></p>
+                <p id="bar-value"></p>
               </div>
             </div>
           </div>
@@ -231,7 +271,6 @@ export default class SortingVisualizer extends React.Component {
   }
 }
 
-// From https://stackoverflow.com/questions/4959975/generate-random-number-between-two-numbers-in-javascript
 function randomIntFromInterval(min, max) {
   // min and max included
   return Math.floor(Math.random() * (max - min + 1) + min);
