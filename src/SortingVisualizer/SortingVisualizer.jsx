@@ -6,6 +6,9 @@ import "./SortingVisualizer.css";
 import bubbleSort from "../SortingAlgorithms/bubbleSort";
 import mergeSort from "../SortingAlgorithms/mergeSort";
 import insertionSort from "../SortingAlgorithms/insertionSort";
+import quickSort from "../SortingAlgorithms/quickSort";
+import selectionSort from "../SortingAlgorithms/selectionSort";
+import heapSort from "../SortingAlgorithms/heapSort";
 
 // Change this value for the speed of the animations.
 const ANIMATION_SPEED_MS = 10;
@@ -98,51 +101,55 @@ export default class SortingVisualizer extends React.Component {
   bubbleSort() {
     c_delay = 0;
     const animationArray = bubbleSort(this.state.array);
-    // First index is the element, second index is height, third index is color.
-    for (let i = 0; i < animationArray.length; i++) {
-      setTimeout(() => {
-        const arrayBars = document.getElementsByClassName("array-bar");
-        const [barIdx, height, color] = animationArray[i];
-        const barStyle = arrayBars[barIdx].style;
-        barStyle.backgroundColor = color;
-        barStyle.height = `${height}px`;
-      }, (c_delay += sortSpeed));
-    }
+    this.visualizeAlg(animationArray);
   }
 
   insertionSort() {
     c_delay = 0;
     const animationArray = insertionSort(this.state.array);
-    for (let i = 0; i < animationArray.length; i++) {
-      setTimeout(() => {
-        const arrayBars = document.getElementsByClassName("array-bar");
-        const [barIdx, height, color] = animationArray[i];
-        const barStyle = arrayBars[barIdx].style;
-        barStyle.backgroundColor = color;
-        barStyle.height = `${height}px`;
-      }, (c_delay += sortSpeed));
-    }
+    this.visualizeAlg(animationArray);
   }
 
-  selectionSort() {}
+  selectionSort() {
+    c_delay = 0;
+    const animationArray = selectionSort(this.state.array);
+    this.visualizeAlg(animationArray);
+  }
 
   mergeSort() {
     c_delay = 0;
     const animationArray = mergeSort(this.state.array);
+    this.visualizeAlg(animationArray);
+  }
+
+  quickSort() {
+    c_delay = 0;
+    const animationArray = quickSort(this.state.array);
+    this.visualizeAlg(animationArray);
+  }
+
+  heapSort() {
+    c_delay = 0;
+    const animationArray = heapSort(this.state.array);
+    this.visualizeAlg(animationArray);
+  }
+
+  visualizeAlg(animationArray) {
+    c_delay = 0;
+    // First index is the element, second index is height, third index is color.
     for (let i = 0; i < animationArray.length; i++) {
       setTimeout(() => {
         const arrayBars = document.getElementsByClassName("array-bar");
         const [barIdx, height, color] = animationArray[i];
-        const barStyle = arrayBars[barIdx].style;
-        barStyle.backgroundColor = color;
-        barStyle.height = `${height}px`;
+        // Ensure no out of bounds exceptions occur.
+        if (barIdx != input_size.value) {
+          const barStyle = arrayBars[barIdx].style;
+          barStyle.backgroundColor = color;
+          barStyle.height = `${height}px`;
+        }
       }, (c_delay += sortSpeed));
     }
   }
-
-  quickSort() {}
-
-  heapSort() {}
 
   render() {
     const { array } = this.state;
@@ -180,16 +187,16 @@ export default class SortingVisualizer extends React.Component {
               <a onClick={() => this.insertionSort()}>Insertion Sort</a>
             </li>
             <li>
-              <a href="#">Selection Sort</a>
+              <a onClick={() => this.selectionSort()}>Selection Sort</a>
             </li>
             <li>
               <a onClick={() => this.mergeSort()}>Merge Sort</a>
             </li>
             <li>
-              <a href="#">Quick Sort</a>
+              <a onClick={() => this.quickSort()}>Quick Sort</a>
             </li>
             <li>
-              <a href="#">Heap Sort</a>
+              <a onClick={() => this.heapSort()}>Heap Sort</a>
             </li>
             <li>
               <a onClick={() => this.resetArray()}>Generate New Array</a>
