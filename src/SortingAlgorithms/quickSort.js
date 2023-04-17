@@ -2,13 +2,19 @@
 var animations = [];
 
 export default function quickSort(array) {
-  //Setting Time complexities
+  // Setting Time complexities.
   document.getElementById("time-worst").innerHTML = " O(N<sup>2</sup>)";
   document.getElementById("time-average").innerHTML = " Θ(N log N)";
   document.getElementById("time-best").innerHTML = " Ω(N log N)";
 
-  //Setting Space complexity
+  // Setting Space complexity.
   document.getElementById("space-worst").innerHTML = " O(log N)";
+
+  // Setting summary.
+  document.getElementById("summary").innerHTML =
+    'Quick sort is a divide-and-conquer sorting algorithm that works by selecting a "pivot" element from the array and partitioning the other elements into two sub-arrays, according to whether they are less than or greater than the pivot. The sub-arrays are then recursively sorted using the same process.';
+  document.getElementById("uses").innerHTML =
+    "Quick sort has an average time complexity of O(N log N), making it one of the most efficient sorting algorithms in practice. It is also an in-place sorting algorithm, meaning it does not require additional memory beyond that used by the input array. Quick sort is a good choice when you need to sort large datasets efficiently and when you have sufficient additional memory available. However, its worst-case time complexity of O(N<sup>2</sup>) can make it inefficient for some types of input data, such as already-sorted or nearly-sorted arrays, and alternative sorting algorithms may be better suited in such cases.";
 
   // Resetting animations at the start of the sort.
   animations = [];
@@ -17,47 +23,6 @@ export default function quickSort(array) {
 
   return animations;
 }
-
-// function sort(array, left, right) {
-//   var index = partition(array, left, right);
-
-//   if (left < index - 1) {
-//     sort(array, left, index - 1);
-//   }
-//   if (index < right) {
-//     sort(array, index, right);
-//   }
-// }
-
-// function partition(array, left, right) {
-//   var pivot = array[Math.floor((left + right) / 2)];
-//   var i = left;
-//   var j = right;
-//   animations.push(i, array[i], "yellow");
-
-//   while (i <= j) {
-//     while (array[i] < pivot) {
-//       i++;
-//     }
-//     while (array[j] > pivot) {
-//       j--;
-//     }
-//     if (i <= j) {
-//       // Swap indicies.
-//       var temp = array[i];
-//       array[i] = array[j];
-//       array[j] = temp;
-//       i++;
-//       j--;
-//     }
-//   }
-
-//   for (var x = left; x <= i; x++) {
-//     animations.push(x, array[x], "green");
-//   }
-
-//   return i;
-// }
 
 function sort(array, start, end) {
   if (start < end) {

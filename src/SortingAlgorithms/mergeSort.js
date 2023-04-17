@@ -2,13 +2,20 @@
 var animations = [];
 
 export default function mergeSort(array) {
-  //Setting Time complexities
+  // Setting Time complexities.
   document.getElementById("time-worst").innerHTML = " O(N log N)";
   document.getElementById("time-average").innerHTML = " Θ(N log N)";
   document.getElementById("time-best").innerHTML = " Ω(N log N)";
 
-  //Setting Space complexity
+  // Setting Space complexity.
   document.getElementById("space-worst").innerHTML = " O(N)";
+
+  // Setting summary.
+  document.getElementById("summary").innerHTML =
+    "Merge sort is a divide-and-conquer sorting algorithm that works by dividing the input array into two halves, recursively sorting each half, and then merging the sorted halves into a single sorted array.";
+  document.getElementById("uses").innerHTML =
+    "Merge sort has a worst-case time complexity of O(N log N), making it efficient for sorting large datasets. It is also a stable sorting algorithm, meaning that it preserves the relative order of equal elements in the input array. Merge sort is a good choice when you need to sort large datasets efficiently and when you have sufficient additional memory available to hold the temporary arrays used in the merge step. Additionally, merge sort is well-suited for sorting linked lists, as it can efficiently merge two sorted linked lists into a single sorted list.";
+
   // Resetting animations at the start of the sort.
   animations = [];
   partition(array, 0, array.length - 1);

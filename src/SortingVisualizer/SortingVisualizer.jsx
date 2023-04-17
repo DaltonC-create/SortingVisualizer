@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import OverlayTrigger from "react-bootstrap/OverlayTrigger";
-import ReactTooltip from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
 import "./SortingVisualizer.css";
 import bubbleSort from "../SortingAlgorithms/bubbleSort";
@@ -10,17 +8,8 @@ import quickSort from "../SortingAlgorithms/quickSort";
 import selectionSort from "../SortingAlgorithms/selectionSort";
 import heapSort from "../SortingAlgorithms/heapSort";
 
-// Change this value for the speed of the animations.
-const ANIMATION_SPEED_MS = 10;
-
 // This is the main color of the array bars.
 const PRIMARY_COLOR = "turquoise";
-
-// This is the color of array bars that are being compared throughout the animations.
-const SECONDARY_COLOR = "red";
-
-// If Hovering occurs on a bar.
-var isHover = false;
 
 // Initialize variables to track input sliders.
 var input_size = document.getElementById("array-size");
@@ -38,7 +27,6 @@ export default class SortingVisualizer extends React.Component {
 
     this.state = {
       array: [],
-      isHover: false,
     };
   }
 
@@ -46,34 +34,45 @@ export default class SortingVisualizer extends React.Component {
     this.updateSize();
   }
 
+  // Initial array setup.
   initializeArray() {
     const array = [];
     for (let i = 0; i < input_size.value; i++) {
-      array.push(randomIntFromInterval(5, 730));
+      array.push(
+        Math.floor(Math.random() * 0.5 * (input_size.max - input_size.min)) + 30
+      );
     }
     this.setState({ array: array });
   }
 
+  // Update the array size.
   updateSize = () => {
     input_size = document.getElementById("array-size");
     this.initializeArray();
   };
 
+  // Reset the array to initial state, keeping size.
   resetArray() {
     const array = [];
     for (let i = 0; i < input_size.value; i++) {
-      array.push(randomIntFromInterval(5, 730));
+      array.push(
+        Math.floor(Math.random() * 0.5 * (input_size.max - input_size.min)) + 30
+      );
       const arrayBars = document.getElementsByClassName("array-bar");
       const barStyle = arrayBars[i].style;
       barStyle.backgroundColor = PRIMARY_COLOR;
     }
+    // Reset all innerHTML values based on selected algorithm.
     document.getElementById("time-best").innerHTML = "";
     document.getElementById("time-average").innerHTML = "";
     document.getElementById("time-worst").innerHTML = "";
     document.getElementById("space-worst").innerHTML = "";
+    document.getElementById("summary").innerHTML = "";
+    document.getElementById("uses").innerHTML = "";
     this.setState({ array: array });
   }
 
+  // Update the speed of the algorithm.
   updateSpeed = () => {
     input_speed = document.getElementById("array-speed");
     var sliderSpeed = 1000;
@@ -98,6 +97,7 @@ export default class SortingVisualizer extends React.Component {
     sortSpeed = 10000 / (Math.floor(input_size.value / 10) * sliderSpeed);
   };
 
+  // Sorting functions.
   bubbleSort() {
     c_delay = 0;
     const animationArray = bubbleSort(this.state.array);
@@ -134,6 +134,7 @@ export default class SortingVisualizer extends React.Component {
     this.visualizeAlg(animationArray);
   }
 
+  // Visualize the algorithm using array of animation changes.
   visualizeAlg(animationArray) {
     c_delay = 0;
     // First index is the element, second index is height, third index is color.
@@ -145,7 +146,7 @@ export default class SortingVisualizer extends React.Component {
         if (barIdx != input_size.value) {
           const barStyle = arrayBars[barIdx].style;
           barStyle.backgroundColor = color;
-          barStyle.height = `${height}px`;
+          barStyle.height = `${height}%`;
         }
       }, (c_delay += sortSpeed));
     }
@@ -230,7 +231,7 @@ export default class SortingVisualizer extends React.Component {
                 key={idx}
                 style={{
                   backgroundColor: PRIMARY_COLOR,
-                  height: `${value}px`,
+                  height: `${value}%`,
                   width: `${100 / input_size.value - 2 * margin_size}%`,
                 }}
                 data-hover={value}
@@ -250,9 +251,4 @@ export default class SortingVisualizer extends React.Component {
       </div>
     );
   }
-}
-
-function randomIntFromInterval(min, max) {
-  // min and max included
-  return Math.floor(Math.random() * (max - min + 1) + min);
 }

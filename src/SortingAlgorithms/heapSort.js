@@ -2,13 +2,19 @@
 var animations = [];
 
 export default function heapSort(array) {
-  //Setting Time complexities
+  // Setting Time complexities.
   document.getElementById("time-worst").innerHTML = " O(N log N)";
   document.getElementById("time-average").innerHTML = " Θ(N log N)";
   document.getElementById("time-best").innerHTML = " Ω(N log N)";
 
-  //Setting Space complexity
+  // Setting Space complexity.
   document.getElementById("space-worst").innerHTML = " O(1)";
+
+  // Setting summary.
+  document.getElementById("summary").innerHTML =
+    "Heap sort is a comparison-based sorting algorithm that works by building a binary heap data structure from the input array and then repeatedly extracting the largest element and swapping it with the last element of the heap. The heap is then reduced in size and heapified again, and the process is repeated until the heap is empty.";
+  document.getElementById("uses").innerHTML =
+    "Heap sort has a worst-case time complexity of O(N log N), making it more efficient than many other sorting algorithms, particularly for large datasets. It is also an in-place sorting algorithm, meaning it does not require additional memory beyond that used by the input array. Overall, heap sort is a good choice when you need to sort large datasets efficiently and when you do not have much additional memory available.";
 
   // Resetting animations at the start of the sort.
   animations = [];
